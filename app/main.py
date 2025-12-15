@@ -5,4 +5,4 @@ app = FastAPI()
 
 @app.get("/")
 def read_root():
-    return {"Hello": "From the cloud CI/CD pipeline version 3!"}
+    return {"Hello": "From the cloud CI/CD pipeline version 4!"}

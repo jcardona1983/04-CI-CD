@@ -1,0 +1,48 @@
+steps:
+  # Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Build'
+    args:
+      - 'build'
+      - '-t'
+      - 'northamerica-south1-docker.pkg.dev/wagon-bootcamp-478315/docker-hub/${_IMAGE_NAME}:${SHORT_SHA}'
+      - '-t'
+      - 'northamerica-south1-docker.pkg.dev/wagon-bootcamp-478315/docker-hub/${_IMAGE_NAME}:latest'
+      - '.'
+
+  # Push the container image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Push'
+    args:
+      - 'push'
+      - '--all-tags'
+      - 'northamerica-south1-docker.pkg.dev/wagon-bootcamp-478315/docker-hub/${_IMAGE_NAME}'
+
+  # Deploy container image to Cloud Run
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'Deploy'
+    args:
+      - 'run'
+      - 'deploy'
+      - '${_SERVICE_NAME}'
+      - '--image'
+      - 'northamerica-south1-docker.pkg.dev/wagon-bootcamp-478315/docker-hub/${_IMAGE_NAME}:${SHORT_SHA}'
+      - '--region'
+      - '${_REGION}'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+
+# Images to be stored in Artifact Registry
+images:
+  - 'northamerica-south1-docker.pkg.dev/wagon-bootcamp-478315/docker-hub/${_IMAGE_NAME}:${SHORT_SHA}'
+  - 'northamerica-south1-docker.pkg.dev/wagon-bootcamp-478315/docker-hub/${_IMAGE_NAME}:latest'
+
+# Substitution variables
+substitutions:
+  _IMAGE_NAME: 'fast-app'
+  _SERVICE_NAME: 'fast-app'
+  _REGION: 'northamerica-south1'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
