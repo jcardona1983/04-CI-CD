@@ -1,4 +1,4 @@
-include ../../../make.inc
+include /home/jcardona1983/code/jcardona1983/data-engineering-challenges/make.inc
 
 # YOUR CODE HERE
 .PHONY: build_docker_image run_docker_image push_docker_image deploy_docker_image
